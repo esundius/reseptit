@@ -4,7 +4,6 @@
     <title>Reseptit</title>
   </head>
   <body>
-    <h1>Reseptit</h1>
     {% if session.username %}
     <p>
       Olet kirjautunut nimellä {{ session.username }}
@@ -12,6 +11,19 @@
     <p>
       <a href="/logout">Kirjaudu ulos</a>
     </p>
+    <h1>Reseptit</h1>
+    {% if recipes %}
+    {% for recipe in recipes %}
+    <p>
+      <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
+      <br />
+    </p>
+    <hr />
+    {% endfor %}
+    {% else %}
+    Ei reseptejä tietokannassa.
+    {% endif %}
+
     {% else %}
     <form action="/login" method="post">
       <p>
