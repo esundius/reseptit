@@ -19,13 +19,15 @@ def login():
     username = request.form['username']
     password = request.form['password']
 
-    sql = 'SELECT password_hash FROM users WHERE username = ?'
-    query = db.query(sql, (username,))
-    if not query:
+    sql = 'SELECT id, password_hash FROM users WHERE username = ?'
+    result = db.query(sql, (username,))
+    if not result:
         return 'VIRHE: väärä tunnus tai salasana'
-    password_hash = query[0][0]
+    user_id = result[0]['id']
+    password_hash = result[0]['password_hash']
 
     if check_password_hash(password_hash, password):
+        session['user_id'] = user_id
         session['username'] = username
         return redirect('/')
     else:
@@ -56,3 +58,12 @@ def create():
         return 'VIRHE: tunnus on jo varattu'
     
     return render_template('create.html')
+
+@app.route('/add_recipe', methods=['POST'])
+def add_recipe():
+    name = request.form['name']
+    content = request.form['content']
+    user_id = session['user_id']
+    sql = 'INSERT INTO recipes (name, content, user_id) VALUES (?, ?, ?)'
+    db.execute(sql, (name, content, user_id))
+    return redirect('/')

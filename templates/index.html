@@ -23,6 +23,18 @@
     {% else %}
     Ei reseptejä tietokannassa.
     {% endif %}
+    <h2>Lisää resepti</h2>
+    <form action="/add_recipe" method="post">
+      <p>
+        Reseptin nimi: <br />
+        <input type="text" name="name" />
+      </p>
+      <p>
+        Ohjeet: <br />
+        <textarea name="content" rows="10" cols="100"></textarea>
+      </p>
+      <input type="submit" value="Tallenna" />
+    </form>
 
     {% else %}
     <form action="/login" method="post">
