@@ -73,5 +73,5 @@ def show_recipe(recipe_id):
     sql = '''SELECT r.id, r.name, r.content, r.created, r.user_id, u.username
              FROM recipes r, users u
              WHERE r.user_id = u.id AND r.id = ?'''
-    result = db.query(sql, (recipe_id,))
+    result = db.query(sql, (recipe_id,))[0]
     return render_template('recipe.html', recipe=result)
