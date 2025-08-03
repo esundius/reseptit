@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reseptit</title>
+  </head>
+  <body>
+    {% if session.user_id %}
+    <p>
+      Olet kirjautunut nimellä {{ session.username }}
+    </p>
+    <p>
+      <a href="/logout">Kirjaudu ulos</a>
+    </p>
+    <hr />
+    <h2>{{ recipe.name }}</h2>
+    <p>
+      Reseptin on luonut {{ recipe.username }} {{ recipe.created }}
+    </p>
+    <p>
+      Ohjeet:
+    </p>
+    <p>
+      {{ recipt.content }}
+    </p>
+    <p>
+      <a href="/">Palaa pääsivulle</a>
+    </p>
+
+    {% else %}
+    <p>
+      Et ole kirjautunut.
+    </p>
+    <p>
+      <a href="/">Palaa pääsivulle</a>
+    </p>
+    {% endif %}
+  </body>
+</html>

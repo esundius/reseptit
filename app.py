@@ -67,3 +67,11 @@ def add_recipe():
     sql = 'INSERT INTO recipes (name, content, user_id) VALUES (?, ?, ?)'
     db.execute(sql, (name, content, user_id))
     return redirect('/')
+
+@app.route('/recipe/<int:recipe_id>')
+def show_recipe(recipe_id):
+    sql = '''SELECT r.id, r.name, r.content, r.created, r.user_id, u.username
+             FROM recipes r, users u
+             WHERE r.user_id = u.id AND r.id = ?'''
+    result = db.query(sql, (recipe_id,))
+    return render_template('recipe.html', recipe=result)
