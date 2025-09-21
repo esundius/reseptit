@@ -1,0 +1,57 @@
+{% extends "base.html.j2" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style>
+  </style>
+{% endblock %}
+{% block body %}
+  {% if session.username %}
+  <p>
+    Olet kirjautunut nimellä {{ session.username }}
+  </p>
+  <p>
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+  <h1>Reseptit</h1>
+  {% if recipes %}
+  {% for recipe in recipes %}
+  <p>
+    <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
+    <br />
+  </p>
+  <hr />
+  {% endfor %}
+  {% else %}
+  Ei reseptejä tietokannassa.
+  {% endif %}
+  <h2>Lisää resepti</h2>
+  <form action="/add_recipe" method="post">
+    <p>
+      Reseptin nimi: <br />
+      <input type="text" name="name" />
+    </p>
+    <p>
+      Ohjeet: <br />
+      <textarea name="content" rows="10" cols="100"></textarea>
+    </p>
+    <input type="submit" value="Tallenna" />
+  </form>
+
+  {% else %}
+  <form action="/login" method="post">
+    <p>
+      Tunnus: <br />
+      <input type="text" name="username" />
+    </p>
+    <p>
+      Salasana: <br />
+      <input type="password" name="password" />
+    </p>
+    <input type="submit" value="Kirjaudu" />
+  </form>
+  <p>
+    Tai <a href="/register">luo tunnus</a>
+  </p>
+  {% endif %}
+{% endblock %}

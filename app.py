@@ -12,7 +12,7 @@ app.secret_key = config.secret_key
 def index():
     sql = 'SELECT r.id, r.name FROM recipes r'
     recipes = db.query(sql)
-    return render_template('index.html', recipes=recipes)
+    return render_template('index.html.j2', recipes=recipes)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -40,7 +40,7 @@ def logout():
 
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.html.j2')
 
 @app.route('/create', methods=['POST'])
 def create():
@@ -57,7 +57,7 @@ def create():
     except sqlite3.IntegrityError:
         return 'VIRHE: tunnus on jo varattu'
     
-    return render_template('create.html')
+    return render_template('create.html.j2')
 
 @app.route('/add_recipe', methods=['POST'])
 def add_recipe():
@@ -74,4 +74,4 @@ def show_recipe(recipe_id):
              FROM recipes r, users u
              WHERE r.user_id = u.id AND r.id = ?'''
     result = db.query(sql, (recipe_id,))[0]
-    return render_template('recipe.html', recipe=result)
+    return render_template('recipe.html.j2', recipe=result)

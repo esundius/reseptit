@@ -1,0 +1,39 @@
+{% extends "base.html.j2" %}
+{% block title %}Reseptit{% endblock %}
+{% block head %}
+  {{ super() }}
+    <style>
+    </style>
+  {% endblock %}
+{% block body %}
+  {% if session.user_id %}
+  <p>
+    Olet kirjautunut nimellä {{ session.username }}
+  </p>
+  <p>
+    <a href="/logout">Kirjaudu ulos</a>
+  </p>
+  <hr />
+  <h2>{{ recipe.name }}</h2>
+  <p>
+    Reseptin on luonut {{ recipe.username }} {{ recipe.created }}
+  </p>
+  <p>
+    Ohjeet:
+  </p>
+  <p>
+    {{ recipe.content }}
+  </p>
+  <p>
+    <a href="/">Palaa pääsivulle</a>
+  </p>
+  
+  {% else %}
+  <p>
+    Et ole kirjautunut.
+  </p>
+  <p>
+    <a href="/">Palaa pääsivulle</a>
+  </p>
+  {% endif %}
+{% endblock %}
