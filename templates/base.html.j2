@@ -2,10 +2,19 @@
 <html lang="fi">
   <head>
     {% block head %}
-    <title>{% block title %}{% endblock %} - Reseptit</title>
+    <title>{% block title %}{% endblock %} - Recipes</title>
     {% endblock %}
   </head>
   <body>
+    {% block menu %}
+      {% if session.user_id %}
+        <a href="/logout">Sign out</a>
+        <p>Hello, {{ session.username }} </p>
+      {% else %}
+      <a href="/register">Register</a> |
+        <a href="/login">Sign in</a>
+      {% endif %}
+    {% endblock %}
     {% block body %}
     {% endblock %}
   </body>

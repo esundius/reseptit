@@ -1,13 +1,14 @@
 {% extends "base.html.j2" %}
-{% block title %}Tunnus luotu{% endblock %}
+{% block title %}Account created{% endblock %}
 {% block head %}
   {{ super() }}
   <style>
   </style>
 {% endblock %}
+{% block menu %}
+  {{ super() }}
+{% endblock %}
 {% block body %}
-    Tunnus luotu.
-    <p>
-      <a href="/">Palaa pääsivulle</a>
-    </p>
+  <h1>Success!</h1>
+  Account created.
 {% endblock %}

@@ -1,10 +1,13 @@
 {% extends "base.html.j2" %}
-{% block title %}Reseptit{% endblock %}
+{% block title %}Recipes{% endblock %}
 {% block head %}
   {{ super() }}
     <style>
     </style>
   {% endblock %}
+{% block menu %}
+  {{ super() }}
+{% endblock %}
 {% block body %}
   {% if session.user_id %}
   <p>
@@ -27,7 +30,7 @@
   <p>
     <a href="/">Palaa pääsivulle</a>
   </p>
-  
+
   {% else %}
   <p>
     Et ole kirjautunut.
