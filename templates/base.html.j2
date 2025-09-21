@@ -7,7 +7,10 @@
   </head>
   <body>
     {% block menu %}
+      <a href="/">Main page</a> |
+      <a href="/search">Search recipes</a> |
       {% if session.user_id %}
+        <a href="/add_recipe">Add recipe</a> |
         <a href="/logout">Sign out</a>
         <p>Hello, {{ session.username }} </p>
       {% else %}

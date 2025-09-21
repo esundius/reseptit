@@ -1,0 +1,37 @@
+{% extends "base.html.j2" %}
+{% block title %}Search recipes{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style>
+  </style>
+{% endblock %}
+{% block menu %}
+  {{ super() }}
+{% endblock %}
+{% block body %}
+  <h1>Search recipes</h1>
+  <form action="/search" method="get">
+    <p>
+      <label for="query">Search by recipe name</label>:
+      {% if query %}
+        <input type="text" id="query" name="query" value="{{ query }}" />
+      {% else %}
+        <input type="text" id="query" name="query" />
+      {% endif %}
+    </p>
+    <input type="submit" value="Search" />
+  </form>
+
+  {% if query %}
+    <h2>Search results</h2>
+    <ul>
+      {% for result in results %}
+        <li>
+          <a href="/recipe/{{ result.id }}">{{ result.name }}</a>
+          <br />
+          Added by {{ result.username }} at {{ result.created }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

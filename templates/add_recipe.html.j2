@@ -1,0 +1,24 @@
+{% extends "base.html.j2" %}
+{% block title %}Add a new recipe{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style>
+  </style>
+{% endblock %}
+{% block menu %}
+  {{ super() }}
+{% endblock %}
+{% block body %}
+  <h1>Add a new recipe</h1>
+  <form action="/add_recipe" method="post">
+    <p>
+      Name of recipe: <br />
+      <input type="text" name="name" />
+    </p>
+    <p>
+      Instructions: <br />
+      <textarea name="content" rows="10" cols="100"></textarea>
+    </p>
+    <input type="submit" value="Add recipe" />
+  </form>
+{% endblock %}

@@ -9,34 +9,18 @@
   {{ super() }}
 {% endblock %}
 {% block body %}
-  {% if session.user_id %}
-  <p>
-    Olet kirjautunut nimellä {{ session.username }}
-  </p>
-  <p>
-    <a href="/logout">Kirjaudu ulos</a>
-  </p>
-  <hr />
   <h2>{{ recipe.name }}</h2>
   <p>
-    Reseptin on luonut {{ recipe.username }} {{ recipe.created }}
+    Added by {{ recipe.username }} at {{ recipe.created }}
   </p>
   <p>
-    Ohjeet:
+    Instructions:
   </p>
   <p>
     {{ recipe.content }}
   </p>
   <p>
-    <a href="/">Palaa pääsivulle</a>
+    <a href="/edit/{{ recipe.id }}">Edit</a>
+    <a href="/remove/{{ recipe.id }}">Remove</a>
   </p>
-
-  {% else %}
-  <p>
-    Et ole kirjautunut.
-  </p>
-  <p>
-    <a href="/">Palaa pääsivulle</a>
-  </p>
-  {% endif %}
 {% endblock %}
