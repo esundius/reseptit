@@ -8,6 +8,9 @@
 {% block menu %}
   {{ super() }}
 {% endblock %}
+{% block flash %}
+  {{ super() }}
+{% endblock %}
 {% block body %}
   <h2>{{ recipe.name }}</h2>
   <p>

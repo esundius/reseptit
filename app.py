@@ -1,7 +1,8 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, request, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+import users
 import db
 import config
 
@@ -18,24 +19,20 @@ def index():
 def login():
     if request.method == 'GET':
         return render_template('login.html.j2')
-    
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
 
-        sql = 'SELECT id, password_hash FROM users WHERE username = ?'
-        result = db.query(sql, (username,))
-        if not result:
-            return 'ERROR: User not found or wrong password'
-        user_id = result[0]['id']
-        password_hash = result[0]['password_hash']
-
-        if check_password_hash(password_hash, password):
-            session['user_id'] = user_id
-            session['username'] = username
-            return redirect('/')
-        else:
-            return 'ERROR: User not found or wrong password'
+        user = users.get_user(username)
+        if not user or not check_password_hash(user['password_hash'], password):
+            flash('ERROR: User not found or wrong password')
+            return render_template('login.html.j2')
+        
+        session['user_id'] = user['id']
+        session['username'] = username
+        flash('Hello, ' + username + '! You have successfully logged in.')
+        return redirect('/')
 
 @app.route('/logout')
 def logout():
@@ -54,16 +51,18 @@ def register():
         password2 = request.form['password2']
 
         if password1 != password2:
-            return 'ERROR: The passwords do not match!'
+            flash('ERROR: The passwords do not match!')
+            return render_template('register.html.j2')
         password_hash = generate_password_hash(password1)
 
         try:
-            sql = 'INSERT INTO users (username, password_hash) VALUES (?, ?)'
-            db.execute(sql, (username, password_hash))
+            users.create_user(username, password_hash)
+            flash('User created successfully, please log in')
+            return redirect('/login')
         except sqlite3.IntegrityError:
-            return 'ERROR: User name already taken'
+            flash('ERROR: User name already taken')
 
-        return render_template('create.html.j2')
+        return render_template('register.html.j2')
 
 @app.route('/add_recipe', methods=['GET', 'POST'])
 def add_recipe():

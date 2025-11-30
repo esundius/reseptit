@@ -12,11 +12,19 @@
       {% if session.user_id %}
         <a href="/add_recipe">Add recipe</a> |
         <a href="/logout">Sign out</a>
-        <p>Hello, {{ session.username }} </p>
       {% else %}
       <a href="/register">Register</a> |
         <a href="/login">Sign in</a>
       {% endif %}
+    {% endblock %}
+    {% block flash %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+          <p><b>{{ message }}</b></p>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
     {% endblock %}
     {% block body %}
     {% endblock %}
