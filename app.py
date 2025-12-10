@@ -65,6 +65,8 @@ def register():
 
 @app.route('/add_recipe', methods=['GET', 'POST'])
 def add_recipe():
+    require_login()
+
     if request.method == 'GET':
         return render_template('add_recipe.html.j2')
 
@@ -90,6 +92,8 @@ def search():
 
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
+    require_login()
+
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
         flash('ERROR: Recipe not found.')
@@ -108,6 +112,8 @@ def edit_recipe(recipe_id):
 
 @app.route('/remove/<int:recipe_id>', methods=['GET', 'POST'])
 def remove_recipe(recipe_id):
+    require_login()
+    
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
         flash('ERROR: Recipe not found.')
@@ -123,3 +129,8 @@ def remove_recipe(recipe_id):
         if 'continue' in request.form:
             recipes_db.delete_recipe(recipe_id)
         return redirect('/')
+
+def require_login():
+    if 'user_id' not in session:
+        flash('ERROR: You must be logged in to view this page.')
+        return redirect('/login')
