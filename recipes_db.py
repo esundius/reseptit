@@ -26,7 +26,7 @@ def get_recipe_by_id(recipe_id):
              WHERE r.user_id = u.id AND
                    r.id = ?'''
     recipe = db.query(sql, (recipe_id,))
-    return recipe[0] if recipe else []
+    return recipe[0] if recipe else None
 
 def update_recipe(recipe_id, name, content):
     sql = 'UPDATE recipes SET name = ?, content = ? WHERE id = ?'
@@ -47,4 +47,4 @@ def search_recipes(query):
                    r.name LIKE ?
              ORDER BY r.name ASC'''
     results = db.query(sql, ['%' + query + '%'])
-    return results if results else []
+    return results if results else None

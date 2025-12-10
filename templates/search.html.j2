@@ -27,14 +27,18 @@
 
   {% if query %}
     <h2>Search results</h2>
-    <ul>
-      {% for result in results %}
-        <li>
-          <a href="/recipe/{{ result.id }}">{{ result.name }}</a>
-          <br />
-          Added by {{ result.username }} at {{ result.created }}
-        </li>
-      {% endfor %}
-    </ul>
+    {% if not results %}
+      <p>No recipes found matching the search query.</p>
+    {% else %}
+      <ul>
+        {% for result in results %}
+          <li>
+            <a href="/recipe/{{ result.id }}">{{ result.name }}</a>
+            <br />
+            Added by {{ result.username }} at {{ result.created }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
   {% endif %}
 {% endblock %}
