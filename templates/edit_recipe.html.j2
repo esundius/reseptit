@@ -16,11 +16,11 @@
   <form action="/edit/{{ recipe.id }}" method="post">
     <p>
       <label for="name">Name of recipe</label>: <br />
-      <textarea id="name" name="name" rows="1" cols="10">{{ recipe.name }}</textarea>
+      <textarea id="name" name="name" rows="1" cols="10" maxlength="100" required>{{ recipe.name }}</textarea>
     </p>
     <p>
       <label for="content">Instructions</label>:<br />
-      <textarea id="content" name="content" rows="10" cols="100">{{ recipe.content }}</textarea>
+      <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ recipe.content }}</textarea>
     </p>
     <input type="submit" name="save" value="Save changes" />
     <input type="submit" name="cancel" value="Cancel" />

@@ -42,16 +42,20 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html.j2')
+        return render_template('register.html.j2', username='')
 
     if request.method == 'POST':
         username = request.form['username']
         password1 = request.form['password1']
         password2 = request.form['password2']
 
+        if not username or not password1 or not password2:
+            flash('ERROR: All fields are required!')
+            return render_template('register.html.j2', username=username)
+
         if password1 != password2:
             flash('ERROR: The passwords do not match!')
-            return render_template('register.html.j2')
+            return render_template('register.html.j2', username=username)
         password_hash = generate_password_hash(password1)
 
         try:
@@ -71,6 +75,18 @@ def add_recipe():
         return render_template('add_recipe.html.j2')
 
     if request.method == 'POST':
+        name = request.form['name']
+        content = request.form['content']
+        if not name or len(name) > 100 or len(content) > 5000:
+            if not name:
+                flash('ERROR: Recipe name is required.')
+            if len(name) > 100:
+                flash('ERROR: Recipe name is too long (maximum 100 characters).')
+                name = name[:100]
+            if len(content) > 5000:
+                flash('ERROR: Recipe content is too long (maximum 5000 characters).')
+                content = content[:5000]
+            return render_template('add_recipe.html.j2', name=name, content=content)
         recipes_db.add_recipe(request.form['name'], request.form['content'], session['user_id'])
         return redirect('/')
 
@@ -106,6 +122,19 @@ def edit_recipe(recipe_id):
         return render_template('edit_recipe.html.j2', recipe=recipe)
 
     if request.method == 'POST':
+        name = request.form['name']
+        content = request.form['content']
+        if not name or len(name) > 100 or len(content) > 5000:
+            if not name:
+                flash('ERROR: Recipe name is required.')
+            if len(name) > 100:
+                flash('ERROR: Recipe name is too long (maximum 100 characters).')
+                name = name[:100]
+            if len(content) > 5000:
+                flash('ERROR: Recipe content is too long (maximum 5000 characters).')
+                content = content[:5000]
+            return render_template('edit_recipe.html.j2', recipe={'id': recipe_id, 'name': name, 'content': content})
+
         if 'save' in request.form:
             recipes_db.update_recipe(recipe_id, request.form['name'], request.form['content'])
         return redirect('/recipe/' + str(recipe_id))
@@ -113,7 +142,7 @@ def edit_recipe(recipe_id):
 @app.route('/remove/<int:recipe_id>', methods=['GET', 'POST'])
 def remove_recipe(recipe_id):
     require_login()
-    
+
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
         flash('ERROR: Recipe not found.')

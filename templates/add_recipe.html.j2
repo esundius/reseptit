@@ -15,12 +15,12 @@
   <h1>Add a new recipe</h1>
   <form action="/add_recipe" method="post">
     <p>
-      Name of recipe: <br />
-      <input type="text" name="name" />
+      <label for="name">Name of recipe:</label> <br />
+      <textarea id="name" name="name" rows="1" cols="10" maxlength="100" required>{{ name }}</textarea>
     </p>
     <p>
-      Instructions: <br />
-      <textarea name="content" rows="10" cols="100"></textarea>
+      <label for="content">Instructions:</label> <br />
+      <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ content }}</textarea>
     </p>
     <input type="submit" value="Add recipe" />
   </form>
