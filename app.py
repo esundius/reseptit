@@ -101,9 +101,7 @@ def show_recipe(recipe_id):
 @app.route('/search')
 def search():
     query = request.args.get('query')
-    results = []
-    if query:
-        results = recipes_db.search_recipes(query)
+    results = recipes_db.search_recipes(query) if query else []
     return render_template('search.html.j2', query=query, results=results)
 
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
@@ -158,6 +156,16 @@ def remove_recipe(recipe_id):
         if 'continue' in request.form:
             recipes_db.delete_recipe(recipe_id)
         return redirect('/')
+
+@app.route('/user/<username>')
+def show_user(username):
+    user = users_db.get_user(username)
+    if not user:
+        flash('ERROR: User not found.')
+        return redirect('/')
+
+    recipes = users_db.get_user_recipes(user['id'])
+    return render_template('user.html.j2', username=username, recipes=recipes)
 
 def require_login():
     if 'user_id' not in session:
