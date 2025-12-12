@@ -13,7 +13,7 @@
 {% endblock %}
 {% block body %}
   <h1>Edit recipe</h1>
-  <form action="/edit/{{ recipe.id }}" method="post">
+  <form action="/edit/{{ recipe.id }}" method="post" enctype="multipart/form-data">
     <p>
       <label for="name">Name of recipe</label>: <br />
       <textarea id="name" name="name" rows="1" cols="10" maxlength="100" required>{{ recipe.name }}</textarea>
@@ -21,6 +21,10 @@
     <p>
       <label for="content">Instructions</label>:<br />
       <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ recipe.content }}</textarea>
+    </p>
+    <p>
+      <label for="image">Image:</label> <br />
+      <input type="file" id="image" name="image" accept="image/*" />
     </p>
     <input type="submit" name="save" value="Save changes" />
     <input type="submit" name="cancel" value="Cancel" />

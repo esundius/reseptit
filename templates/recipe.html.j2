@@ -15,7 +15,15 @@
   <h2>{{ recipe.name }}</h2>
   <p>
     Added by {{ recipe.username }} at {{ recipe.created }}
+    {% if recipe.modified %}
+      (Updated at {{ recipe.modified }})
+    {% endif %}
   </p>
+  {% if recipe.has_image %}
+    <p>
+      <img src="/image/{{ recipe.id }}" alt="Image for {{ recipe.name }}" />
+    </p>
+  {% endif %}
   <p>
     Instructions:
   </p>

@@ -1,6 +1,6 @@
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session, flash
+from flask import redirect, render_template, request, session, flash, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import users_db
 import recipes_db
@@ -77,17 +77,38 @@ def add_recipe():
     if request.method == 'POST':
         name = request.form['name']
         content = request.form['content']
-        if not name or len(name) > 100 or len(content) > 5000:
-            if not name:
-                flash('ERROR: Recipe name is required.')
-            if len(name) > 100:
-                flash('ERROR: Recipe name is too long (maximum 100 characters).')
-                name = name[:100]
-            if len(content) > 5000:
-                flash('ERROR: Recipe content is too long (maximum 5000 characters).')
-                content = content[:5000]
-            return render_template('add_recipe.html.j2', name=name, content=content)
-        recipes_db.add_recipe(request.form['name'], request.form['content'], session['user_id'])
+        file = request.files.get('image')
+        image = None
+        image_type = None
+        error_found = False
+
+        if file:
+            if not allowed_image(file.filename):
+                flash('ERROR: Invalid image file type.')
+                file = None
+                error_found = True
+            else:
+                image = file.read()
+                image_type = file.filename.rsplit('.', 1)[1].lower()
+                if len(image) > config.max_image_size:
+                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.max_image_size / (1024 * 1024)} MB.')
+                    file, image = None, None
+                    error_found = True
+        if not name:
+            flash('ERROR: Recipe name is required.')
+            error_found = True
+        if len(name) > 100:
+            flash('ERROR: Recipe name is too long (maximum 100 characters).')
+            name = name[:100]
+            error_found = True
+        if len(content) > 5000:
+            flash('ERROR: Recipe content is too long (maximum 5000 characters).')
+            content = content[:5000]
+            error_found = True
+        if error_found:
+            return render_template('add_recipe.html.j2', name=name, content=content, image=image)
+        
+        recipes_db.add_recipe(session['user_id'], name, content, image, image_type)
         return redirect('/')
 
 @app.route('/recipe/<int:recipe_id>')
@@ -122,19 +143,39 @@ def edit_recipe(recipe_id):
     if request.method == 'POST':
         name = request.form['name']
         content = request.form['content']
-        if not name or len(name) > 100 or len(content) > 5000:
-            if not name:
-                flash('ERROR: Recipe name is required.')
-            if len(name) > 100:
-                flash('ERROR: Recipe name is too long (maximum 100 characters).')
-                name = name[:100]
-            if len(content) > 5000:
-                flash('ERROR: Recipe content is too long (maximum 5000 characters).')
-                content = content[:5000]
-            return render_template('edit_recipe.html.j2', recipe={'id': recipe_id, 'name': name, 'content': content})
+        file = request.files.get('image')
+        image = None
+        image_type = None
+        error_found = False
+
+        if file:
+            if not allowed_image(file.filename):
+                flash('ERROR: Invalid image file type.')
+                file = None
+                error_found = True
+            else:
+                image = file.read()
+                image_type = file.filename.rsplit('.', 1)[1].lower()
+                if len(image) > config.max_image_size:
+                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.max_image_size / (1024 * 1024)} MB.')
+                    file, image, image_type = None, None, None
+                    error_found = True
+        if not name:
+            flash('ERROR: Recipe name is required.')
+            error_found = True
+        if len(name) > 100:
+            flash('ERROR: Recipe name is too long (maximum 100 characters).')
+            name = name[:100]
+            error_found = True
+        if len(content) > 5000:
+            flash('ERROR: Recipe content is too long (maximum 5000 characters).')
+            content = content[:5000]
+            error_found = True
+        if error_found:
+            return render_template('edit_recipe.html.j2', recipe={'id': recipe_id, 'name': name, 'content': content, 'image': image})
 
         if 'save' in request.form:
-            recipes_db.update_recipe(recipe_id, request.form['name'], request.form['content'])
+            recipes_db.update_recipe(recipe_id, name, content, image, image_type)
         return redirect('/recipe/' + str(recipe_id))
 
 @app.route('/remove/<int:recipe_id>', methods=['GET', 'POST'])
@@ -167,7 +208,23 @@ def show_user(username):
     recipes = users_db.get_user_recipes(user['id'])
     return render_template('user.html.j2', username=username, recipes=recipes)
 
+@app.route('/image/<int:recipe_id>')
+def serve_image(recipe_id):
+    image_data = recipes_db.get_recipe_image(recipe_id)
+    if not image_data:
+        flash('ERROR: Image not found.')
+        return redirect('/')
+    
+    image, image_type = image_data['image'], image_data['image_type']
+    response = make_response(bytes(image))
+    response.headers.set('Content-Type', f'image/{image_type}')
+    return response
+
 def require_login():
     if 'user_id' not in session:
         flash('ERROR: You must be logged in to view this page.')
         return redirect('/login')
+
+def allowed_image(filename):
+    return ('.' in filename and
+            filename.rsplit('.', 1)[1].lower() in config.ALLOWED_IMAGE_EXTENSIONS)
