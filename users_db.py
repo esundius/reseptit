@@ -18,7 +18,9 @@ def get_user(username):
 def get_user_recipes(user_id):
     sql = '''SELECT r.id,
                     r.name,
-                    r.created
+                    r.created,
+                    r.modified,
+                    r.user_id
              FROM recipes r
              WHERE r.user_id = ?
              ORDER BY r.name ASC'''

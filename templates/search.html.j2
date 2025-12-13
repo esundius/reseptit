@@ -35,7 +35,10 @@
           <li>
             <a href="/recipe/{{ result.id }}">{{ result.name }}</a>
             <br />
-            Added by {{ result.username }} at {{ result.created }}
+            Added by <a href="/user/{{ result.username }}">{{ result.username }}</a> at {{ result.created }}
+            {% if result.modified %}
+              (Updated at {{ result.modified }})
+            {% endif %}
           </li>
         {% endfor %}
       </ul>

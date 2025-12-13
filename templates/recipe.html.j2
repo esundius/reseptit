@@ -14,7 +14,7 @@
 {% block body %}
   <h2>{{ recipe.name }}</h2>
   <p>
-    Added by {{ recipe.username }} at {{ recipe.created }}
+    Added by <a href="/user/{{ recipe.username }}">{{ recipe.username }}</a> at {{ recipe.created }}
     {% if recipe.modified %}
       (Updated at {{ recipe.modified }})
     {% endif %}

@@ -18,7 +18,10 @@
       <p>
         <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
         <br />
-        Added by {{ recipe.username }} at {{ recipe.created }}
+        Added by <a href="/user/{{ recipe.username }}">{{ recipe.username }}</a> at {{ recipe.created }}
+        {% if recipe.modified %}
+          (Updated at {{ recipe.modified }})
+        {% endif %}
         <br />
       </p>
       <hr />
