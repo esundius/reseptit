@@ -122,8 +122,8 @@ def show_recipe(recipe_id):
 @app.route('/search')
 def search():
     query = request.args.get('query')
-    results = recipes_db.search_recipes(query) if query else []
-    return render_template('search.html.j2', query=query, results=results)
+    recipes = recipes_db.search_recipes(query) if query else []
+    return render_template('search.html.j2', query=query, recipes=recipes)
 
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):

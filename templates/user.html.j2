@@ -21,12 +21,9 @@
     <ul>
       {% for recipe in recipes %}
         <li>
-          <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
-          <br />
-          Added at {{ recipe.created }}
-          {% if recipe.modified %}
-            (Updated at {{ recipe.modified }})
-          {% endif %}
+          {% block list_display_recipe scoped %}
+            {{ super() }}
+          {% endblock %}
         </li>
       {% endfor %}
     </ul>

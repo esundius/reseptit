@@ -27,18 +27,15 @@
 
   {% if query %}
     <h2>Search results</h2>
-    {% if not results %}
+    {% if not recipes %}
       <p>No recipes found matching the search query.</p>
     {% else %}
       <ul>
-        {% for result in results %}
+        {% for recipe in recipes %}
           <li>
-            <a href="/recipe/{{ result.id }}">{{ result.name }}</a>
-            <br />
-            Added by <a href="/user/{{ result.username }}">{{ result.username }}</a> at {{ result.created }}
-            {% if result.modified %}
-              (Updated at {{ result.modified }})
-            {% endif %}
+            {% block list_display_recipe scoped %}
+              {{ super() }}
+            {% endblock %}
           </li>
         {% endfor %}
       </ul>
