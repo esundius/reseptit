@@ -97,12 +97,12 @@ def register():
 @app.route('/add_recipe', methods=['GET', 'POST'])
 def add_recipe():
     require_login()
-    check_csrf_token()
 
     if request.method == 'GET':
         return render_template('add_recipe.html.j2')
 
     if request.method == 'POST':
+        check_csrf_token()
         name = request.form['name']
         content = request.form['content']
         file = request.files.get('image')
@@ -206,7 +206,6 @@ def search(page=1):
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
     require_login()
-    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -220,6 +219,7 @@ def edit_recipe(recipe_id):
         return render_template('edit_recipe.html.j2', recipe=recipe)
 
     if request.method == 'POST':
+        check_csrf_token()
         name = request.form['name']
         content = request.form['content']
         file = request.files.get('image')
@@ -271,7 +271,6 @@ def edit_recipe(recipe_id):
 @app.route('/remove/<int:recipe_id>', methods=['GET', 'POST'])
 def remove_recipe(recipe_id):
     require_login()
-    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -285,6 +284,7 @@ def remove_recipe(recipe_id):
         return render_template('remove_recipe.html.j2', recipe=recipe)
 
     if request.method == 'POST':
+        check_csrf_token()
         if 'continue' in request.form:
             recipes_db.delete_recipe(recipe_id)
         return redirect('/')
