@@ -1,0 +1,193 @@
+************* Module users_db
+users_db.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+users_db.py:3:0: C0116: Missing function or method docstring (missing-function-docstring)
+users_db.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+users_db.py:18:0: C0116: Missing function or method docstring (missing-function-docstring)
+users_db.py:29:0: C0116: Missing function or method docstring (missing-function-docstring)
+users_db.py:36:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module db
+db.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+db.py:4:0: C0116: Missing function or method docstring (missing-function-docstring)
+db.py:10:0: C0116: Missing function or method docstring (missing-function-docstring)
+db.py:17:0: C0116: Missing function or method docstring (missing-function-docstring)
+db.py:20:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module recipes_db
+recipes_db.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+recipes_db.py:3:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:13:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:19:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:31:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:48:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:66:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:74:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:83:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:88:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:105:0: C0116: Missing function or method docstring (missing-function-docstring)
+recipes_db.py:124:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module config
+config.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module reviews_db
+reviews_db.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+reviews_db.py:3:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:11:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:28:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:35:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:41:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+reviews_db.py:52:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:64:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:79:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:86:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:102:0: C0116: Missing function or method docstring (missing-function-docstring)
+reviews_db.py:109:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module tags_db
+tags_db.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+tags_db.py:3:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:14:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:21:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:26:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:32:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:41:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:57:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:74:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:92:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:99:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:119:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:140:0: C0116: Missing function or method docstring (missing-function-docstring)
+tags_db.py:151:0: C0116: Missing function or method docstring (missing-function-docstring)
+************* Module seed
+seed.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+seed.py:13:4: C0103: Variable name "USERNAME" doesn't conform to snake_case naming style (invalid-name)
+seed.py:14:4: C0103: Variable name "PASSWORD_HASH" doesn't conform to snake_case naming style (invalid-name)
+seed.py:19:4: C0103: Variable name "TAG_NAME" doesn't conform to snake_case naming style (invalid-name)
+seed.py:23:4: C0103: Variable name "NAME" doesn't conform to snake_case naming style (invalid-name)
+seed.py:24:4: C0103: Variable name "CONTENT" doesn't conform to snake_case naming style (invalid-name)
+seed.py:47:12: C0103: Variable name "COMMENT" doesn't conform to snake_case naming style (invalid-name)
+************* Module app
+app.py:188:0: C0301: Line too long (164/100) (line-too-long)
+app.py:216:0: C0301: Line too long (154/100) (line-too-long)
+app.py:335:0: C0301: Line too long (166/100) (line-too-long)
+app.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+app.py:18:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:22:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:29:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:44:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:44:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:68:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:74:4: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+app.py:80:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:80:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:108:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:108:0: R0912: Too many branches (13/12) (too-many-branches)
+app.py:108:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:168:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:175:4: R1731: Consider using 'page = max(page, 1)' instead of unnecessary if block (consider-using-max-builtin)
+app.py:180:4: R1730: Consider using 'page = min(page, page_count)' instead of unnecessary if block (consider-using-min-builtin)
+app.py:192:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:204:4: R1731: Consider using 'page = max(page, 1)' instead of unnecessary if block (consider-using-max-builtin)
+app.py:213:8: R1730: Consider using 'page = min(page, page_count)' instead of unnecessary if block (consider-using-min-builtin)
+app.py:219:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:219:0: R0912: Too many branches (19/12) (too-many-branches)
+app.py:219:0: R0915: Too many statements (60/50) (too-many-statements)
+app.py:219:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:293:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:293:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:320:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:325:4: R1731: Consider using 'page = max(page, 1)' instead of unnecessary if block (consider-using-max-builtin)
+app.py:331:4: R1730: Consider using 'page = min(page, page_count)' instead of unnecessary if block (consider-using-min-builtin)
+app.py:338:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:370:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:401:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:420:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:431:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:431:0: R1710: Either all return statements in a function should return an expression, or none of them should. (inconsistent-return-statements)
+app.py:436:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:441:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:446:0: C0116: Missing function or method docstring (missing-function-docstring)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[32:39]
+==tags_db:[41:48]
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[88:95]
+==tags_db:[75:82]
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[33:39]
+==tags_db:[59:65]
+                             r.name,
+                             r.created,
+                             r.modified,
+                             r.user_id,
+                             u.username,
+                             (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[89:95]
+==tags_db:[101:107]
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[107:113]
+==tags_db:[122:128]
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[19:24]
+==users_db:[37:42]
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[31:37]
+==users_db:[36:42]
+    offset = (page - 1) * page_size
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[31:39]
+==tags_db:[74:82]
+    offset = (page - 1) * page_size
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+app.py:1:0: R0801: Similar lines in 2 files
+==recipes_db:[52:57]
+==tags_db:[43:48]
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating, (duplicate-code)
+
+------------------------------------------------------------------
+Your code has been rated at 8.15/10 (previous run: 8.15/10, +0.00)
+
