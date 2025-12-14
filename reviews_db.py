@@ -72,8 +72,32 @@ def get_user_reviews(user_id):
              FROM reviews rv, recipes r
              WHERE rv.recipe_id = r.id AND
                    rv.user_id = ?
-             ORDER BY rv.created DESC'''
+             ORDER BY rv.created DESC
+             LIMIT 10'''
     return db.query(sql, (user_id,))
+
+def get_user_review_count(user_id):
+    sql = '''SELECT COUNT(*) AS count
+             FROM reviews
+             WHERE user_id = ?'''
+    result = db.query(sql, (user_id,))
+    return result[0]['count'] if result else 0
+
+def get_user_reviews_paginated(user_id, page=1, page_size=10):
+    offset = (page - 1) * page_size
+    sql = '''SELECT rv.id,
+                    rv.recipe_id,
+                    rv.rating,
+                    rv.comment,
+                    rv.created,
+                    rv.modified,
+                    r.name AS recipe_name
+             FROM reviews rv, recipes r
+             WHERE rv.recipe_id = r.id AND
+                   rv.user_id = ?
+             ORDER BY rv.created DESC
+             LIMIT ? OFFSET ?'''
+    return db.query(sql, (user_id, page_size, offset))
 
 def update_review(review_id, rating, comment=None):
     sql = '''UPDATE reviews

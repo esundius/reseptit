@@ -328,7 +328,8 @@ def show_user(username, page=1):
     if page > page_count:
         page = page_count
     recipes = users_db.get_user_recipes_paginated(user['id'], page, page_size)
-    return render_template('user.html.j2', username=username, recipes=recipes, page=page, page_count=page_count, recipe_count=recipe_count)
+    user_reviews = reviews_db.get_user_reviews(user['id'])
+    return render_template('user.html.j2', username=username, recipes=recipes, page=page, page_count=page_count, recipe_count=recipe_count, user_reviews=user_reviews)
 
 @app.route('/add_review/<int:recipe_id>', methods=['POST'])
 def add_review(recipe_id):

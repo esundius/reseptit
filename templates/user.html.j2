@@ -14,6 +14,33 @@
 {% block body %}
   <h1>User {{ username }}</h1>
 
+  {% if user_reviews %}
+    {% if username == session.username %}
+      <h2>Your 10 last reviews</h2>
+    {% else %}
+      <h2>The 10 last reviews by {{ username }}</h2>
+    {% endif %}
+  {% endif %}
+  {% for review in user_reviews %}
+    <div class="review">
+      <h3>Review for <a href="/recipe/{{ review.recipe_id }}">{{ review.recipe_name }}</a></h3>
+      <p>
+        Added at {{ review.created }}
+      </p>
+      {% if review.modified %}
+        <p>
+          (Updated at {{ review.modified }})
+        </p>
+      {% endif %}
+      <p>
+        Rating: {{ review.rating }} / 5
+      </p>
+      <p>
+        {{ review.comment | show_lines }}
+      </p>
+    </div>
+  {% endfor %}
+
   {% if recipes | count == 0 %}
     {% if username == session.username %}
       <p>You have not added any recipes yet.</p>
