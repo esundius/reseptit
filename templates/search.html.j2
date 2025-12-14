@@ -46,6 +46,7 @@
       {% block list_recipes scoped %}
         {{ super() }}
       {% endblock %}
+      <div class="pagination">
       <p>
         {% if page > 1 %}
           <a href="{{ url_for('search', page=page-1, query=query, tags=request.args.getlist('tags')) }}">&lt; Previous</a>
@@ -55,6 +56,7 @@
           <a href="{{ url_for('search', page=page+1, query=query, tags=request.args.getlist('tags')) }}">Next &gt;</a>
         {% endif %}
       </p>
+      </div>
     {% endif %}
   {% endif %}
 {% endblock %}

@@ -36,17 +36,21 @@
     </p>
   {% endif %}
 
+  <div class="recipe">
   <h3>
     Instructions:
   </h3>
-  <p>
-    {{ recipe.content | show_lines }}
-  </p>
-  
-  {% if recipe.tags %}
     <p>
-      <b>Tags:</b> {{ recipe.tags }}
+      {{ recipe.content | show_lines }}
     </p>
+  </div>
+  {% if recipe.tags %}
+    <br />
+    <span class="recipe-tags">
+      {% for tag in recipe.tags.split(', ') %}
+        <a href="/search?query=&tags={{ tag }}" class="recipe-tag">{{ tag }}</a>
+      {% endfor %}
+    </span>
   {% endif %}
 
   {% if session.user_id and recipe.user_id == session.user_id %}

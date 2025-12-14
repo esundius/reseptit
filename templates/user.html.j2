@@ -32,6 +32,7 @@
     {% block list_recipes scoped %}
       {{ super() }}
     {% endblock %}
+    <div class="pagination">
     <p>
       {% if page > 1 %}
         <a href="/user/{{ username }}/{{ page - 1 }}">&lt; Previous</a>
@@ -41,5 +42,6 @@
         <a href="/user/{{ username }}/{{ page + 1 }}">Next &gt;</a>
       {% endif %}
     </p>
+    </div>
   {% endif %}
 {% endblock %}
