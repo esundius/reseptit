@@ -42,12 +42,19 @@
   <p>
     {{ recipe.content | show_lines }}
   </p>
+  
+  {% if recipe.tags %}
+    <p>
+      <b>Tags:</b> {{ recipe.tags }}
+    </p>
+  {% endif %}
+
   <p>
     <a href="/edit/{{ recipe.id }}">Edit</a>
     <a href="/remove/{{ recipe.id }}">Remove</a>
   </p>
 
-  {% if session.user_id %}
+  {% if session.user_id and recipe.user_id != session.user_id %}
     {% if not user_review %}
       <h3>
         Add a review:
@@ -92,7 +99,7 @@
         <input type="submit" value="Delete your review" />
       </form>
     {% endif %}
-  {% else %}
+  {% elif not session.user_id %}
     <p>
       <a href="/login">Sign in</a> to add a review.
     </p>

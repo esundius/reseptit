@@ -15,17 +15,24 @@
   <h1>Search recipes</h1>
   <form action="/search" method="get">
     <p>
-      <label for="query">Search by recipe name</label>:
+      <label for="query">Search in recipe name and content</label>:
       {% if query %}
         <input type="text" id="query" name="query" value="{{ query }}" />
       {% else %}
         <input type="text" id="query" name="query" />
       {% endif %}
     </p>
+    <p>
+      <label for="tags">Filter by tags (when selecting multiple tags, any will match):</label>
+      {% for tag in all_tags %}
+        <input type="checkbox" name="tags" value="{{ tag.name }}" {% if tag.name in request.args.getlist('tags') %}checked{% endif %}>{{ tag.name }}
+      {% endfor %}
+    </p>
     <input type="submit" value="Search" />
   </form>
 
-  {% if query %}
+
+  {% if query or request.args.getlist('tags') %}
     <h2>Search results</h2>
     {% if not recipes %}
       <p>No recipes found matching the search query.</p>

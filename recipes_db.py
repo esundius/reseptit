@@ -8,6 +8,7 @@ def add_recipe(user_id, name, content=None, image=None, image_type=None):
                                   user_id)
              VALUES (?, ?, ?, ?, ?)'''
     db.execute(sql, (name, content, image, image_type, user_id))
+    return db.last_insert_id()
 
 def get_recipe_count():
     sql = '''SELECT COUNT(*) AS count
@@ -36,7 +37,8 @@ def get_recipes(page, page_size):
                     r.user_id,
                     u.username,
                     (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
-                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count,
+                    (SELECT GROUP_CONCAT(t.name, ', ') FROM tags t, recipe_tags rt WHERE rt.recipe_id = r.id AND rt.tag_id = t.id) AS tags
              FROM recipes r, users u
              WHERE r.user_id = u.id
              ORDER BY r.name ASC
@@ -53,7 +55,8 @@ def get_recipe_by_id(recipe_id):
                     r.user_id,
                     u.username,
                     (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
-                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count,
+                    (SELECT GROUP_CONCAT(t.name, ', ') FROM tags t, recipe_tags rt WHERE rt.recipe_id = r.id AND rt.tag_id = t.id) AS tags
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
                    r.id = ?'''
@@ -90,7 +93,8 @@ def search_recipes(query):
                     r.user_id,
                     u.username,
                     (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
-                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count,
+                    (SELECT GROUP_CONCAT(t.name, ', ') FROM tags t, recipe_tags rt WHERE rt.recipe_id = r.id AND rt.tag_id = t.id) AS tags
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
                    (r.name LIKE ? OR r.content LIKE ?)
@@ -107,7 +111,8 @@ def search_recipes_paginated(query, page, page_size):
                     r.user_id,
                     u.username,
                     (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
-                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count,
+                    (SELECT GROUP_CONCAT(t.name, ', ') FROM tags t, recipe_tags rt WHERE rt.recipe_id = r.id AND rt.tag_id = t.id) AS tags
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
                    (r.name LIKE ? OR r.content LIKE ?)

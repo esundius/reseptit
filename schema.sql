@@ -25,9 +25,22 @@ CREATE TABLE reviews (
     comment       TEXT,
     created       TEXT DEFAULT CURRENT_TIMESTAMP,
     modified      TEXT,
-    FOREIGN KEY(recipe_id) REFERENCES recipes(id),
+    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
     FOREIGN KEY(user_id) REFERENCES users(id),
     UNIQUE(recipe_id, user_id)
+);
+
+CREATE TABLE tags (
+    id            INTEGER PRIMARY KEY,
+    name          TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE recipe_tags (
+    recipe_id     INTEGER,
+    tag_id        INTEGER,
+    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    FOREIGN KEY(tag_id) REFERENCES tags(id) ON DELETE CASCADE,
+    UNIQUE(recipe_id, tag_id)
 );
 
 CREATE TRIGGER update_modified

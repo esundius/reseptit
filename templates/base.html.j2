@@ -11,6 +11,7 @@
       <a href="/search">Search recipes</a> |
       {% if session.user_id %}
         <a href="/add_recipe">Add recipe</a> |
+        <a href="/user/{{ session.username }}">My profile</a> |
         <a href="/logout">Sign out</a>
       {% else %}
       <a href="/register">Register</a> |
@@ -31,6 +32,10 @@
         {% for recipe in recipes %}
           <p>
             <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
+            {% if recipe.tags %}
+              <br />
+              Tags: {{ recipe.tags }}
+            {% endif %}
             {% if recipe.average_rating %}
               <br />
               Average rating: {{ '%.2f' | format(recipe.average_rating) }} (based on {{ recipe.review_count }} reviews)

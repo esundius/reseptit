@@ -8,6 +8,7 @@ import markupsafe
 import reviews_db
 import users_db
 import recipes_db
+import tags_db
 import config
 
 app = Flask(__name__)
@@ -104,6 +105,7 @@ def add_recipe():
         name = request.form['name']
         content = request.form['content']
         file = request.files.get('image')
+        tags = request.form['tags'].replace(',', ' ').split()
         image = None
         image_type = None
         error_found = False
@@ -134,7 +136,19 @@ def add_recipe():
         if error_found:
             return render_template('add_recipe.html.j2', name=name, content=content, image=image)
         
-        recipes_db.add_recipe(session['user_id'], name, content, image, image_type)
+        recipe_id = recipes_db.add_recipe(session['user_id'], name, content, image, image_type)
+
+        existing_tags = tags_db.get_all_tags()
+        tag_name_to_id = {tag['name']: tag['id'] for tag in existing_tags}
+        for tag in tags:
+            if tag not in tag_name_to_id:
+                tag_name_to_id[tag] = tags_db.add_tag(tag)
+            try:
+                tags_db.add_tag_to_recipe(recipe_id, tag_name_to_id[tag])
+            except sqlite3.IntegrityError:
+                pass  # Tag already added to recipe, ignore
+
+        flash('Recipe added successfully.')
         return redirect('/')
 
 @app.route('/recipe/<int:recipe_id>')
@@ -164,21 +178,29 @@ def show_recipe(recipe_id, page=1):
 @app.route('/search')
 @app.route('/search/<int:page>')
 def search(page=1):
+    all_tags = tags_db.get_all_tags()
+    tag_name_to_id = {tag['name']: tag['id'] for tag in all_tags}
     query = request.args.get('query')
+    selected_tags = request.args.getlist('tags')
+    if selected_tags:
+        tag_ids = [tag_name_to_id[tag] for tag in selected_tags if tag in tag_name_to_id]
+    else:
+        tag_ids = [tag_name_to_id[tag] for tag in tag_name_to_id]
+
+    print(f'Search query: {query}, selected tags: {selected_tags}, tag IDs: {tag_ids}')
     recipes = []
     if page < 1:
         page = 1
     page_size = 10
-    if query:
-        recipe_count = recipes_db.get_search_recipe_count(query)
+    page_count = 1
+    if query or selected_tags:
+        recipe_count = tags_db.get_recipe_count_filtered_by_tags(query, tag_ids)
         page_count = math.ceil(recipe_count / page_size)
         page_count = max(page_count, 1)
         if page > page_count:
             page = page_count
-        recipes = recipes_db.search_recipes_paginated(query, page, page_size)
-    else:
-        page_count = 1
-    return render_template('search.html.j2', query=query, recipes=recipes, page=page, page_count=page_count)
+        recipes = tags_db.search_recipes_filtered_by_tags_paginated(query, tag_ids, page, page_size)
+    return render_template('search.html.j2', query=query, recipes=recipes, page=page, page_count=page_count, all_tags=all_tags)
 
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
@@ -199,6 +221,7 @@ def edit_recipe(recipe_id):
         name = request.form['name']
         content = request.form['content']
         file = request.files.get('image')
+        tags = request.form['tags'].replace(',', ' ').split()
         image = None
         image_type = None
         error_found = False
@@ -231,6 +254,16 @@ def edit_recipe(recipe_id):
 
         if 'save' in request.form:
             recipes_db.update_recipe(recipe_id, name, content, image, image_type)
+            existing_tags = tags_db.get_all_tags()
+            tag_name_to_id = {tag['name']: tag['id'] for tag in existing_tags}
+            for tag in tags:
+                if tag not in tag_name_to_id:
+                    tag_name_to_id[tag] = tags_db.add_tag(tag)
+                try:
+                    tags_db.add_tag_to_recipe(recipe_id, tag_name_to_id[tag])
+                except sqlite3.IntegrityError:
+                    pass  # Tag already added to recipe, ignore
+            flash('Recipe updated successfully.')
         return redirect('/recipe/' + str(recipe_id))
 
 @app.route('/remove/<int:recipe_id>', methods=['GET', 'POST'])

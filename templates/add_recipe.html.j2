@@ -22,6 +22,10 @@
       <label for="content">Instructions:</label> <br />
       <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ content | show_lines }}</textarea>
     </p>
+    <p>
+      <label for="tags">Tags (comma separated):</label> <br />
+      <input type="text" id="tags" name="tags" value="{{ tags }}" />
+    </p>
     {% if image %}
       <p>Current image uploaded.</p>
       
