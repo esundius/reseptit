@@ -20,7 +20,7 @@
     </p>
     <p>
       <label for="content">Instructions:</label> <br />
-      <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ content }}</textarea>
+      <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ content | show_lines }}</textarea>
     </p>
     {% if image %}
       <p>Current image uploaded.</p>

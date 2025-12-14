@@ -20,7 +20,7 @@
     </p>
     <p>
       <label for="content">Instructions</label>:<br />
-      <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ recipe.content }}</textarea>
+      <textarea id="content" name="content" rows="10" cols="100" maxlength="5000">{{ recipe.content | show_lines }}</textarea>
     </p>
     <p>
       <label for="image">Image:</label> <br />

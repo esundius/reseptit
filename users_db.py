@@ -39,7 +39,9 @@ def get_user_recipes_paginated(user_id, page, page_size):
                     r.name,
                     r.created,
                     r.modified,
-                    r.user_id
+                    r.user_id,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
              FROM recipes r
              WHERE r.user_id = ?
              ORDER BY r.name ASC

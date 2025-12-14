@@ -4,6 +4,8 @@ import sqlite3
 from flask import Flask
 from flask import redirect, render_template, request, session, flash, make_response, g
 from werkzeug.security import generate_password_hash, check_password_hash
+import markupsafe
+import reviews_db
 import users_db
 import recipes_db
 import config
@@ -136,12 +138,28 @@ def add_recipe():
         return redirect('/')
 
 @app.route('/recipe/<int:recipe_id>')
-def show_recipe(recipe_id):
+@app.route('/recipe/<int:recipe_id>/<int:page>')
+def show_recipe(recipe_id, page=1):
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
         flash('ERROR: Recipe not found.')
         return redirect('/')
-    return render_template('recipe.html.j2', recipe=recipe)
+    
+    page_size = 10
+    if page < 1:
+        page = 1
+    reviews_count = reviews_db.get_reviews_for_recipe_count(recipe_id)
+    page_count = math.ceil(reviews_count / page_size)
+    page_count = max(page_count, 1)
+    if page > page_count:
+        page = page_count
+    reviews = reviews_db.get_reviews_for_recipe_paginated(recipe_id, page, page_size)
+    
+    user_review = None
+    if 'user_id' in session:
+        user_review = reviews_db.get_user_review_for_recipe(session['user_id'], recipe_id)
+    
+    return render_template('recipe.html.j2', recipe=recipe, reviews=reviews, page=page, page_count=page_count, reviews_count=reviews_count, user_review=user_review)
 
 @app.route('/search')
 @app.route('/search/<int:page>')
@@ -253,6 +271,85 @@ def show_user(username, page=1):
     recipes = users_db.get_user_recipes_paginated(user['id'], page, page_size)
     return render_template('user.html.j2', username=username, recipes=recipes, page=page, page_count=page_count, recipe_count=recipe_count)
 
+@app.route('/add_review/<int:recipe_id>', methods=['POST'])
+def add_review(recipe_id):
+    require_login()
+
+    recipe = recipes_db.get_recipe_by_id(recipe_id)
+    if not recipe:
+        flash('ERROR: Recipe not found.')
+        return redirect('/')
+
+    if recipe['user_id'] == session['user_id']:
+        flash('ERROR: You cannot review your own recipe.')
+        return redirect('/recipe/' + str(recipe_id))
+
+    rating = int(request.form['rating'])
+    comment = request.form['comment']
+    if rating < 1 or rating > 5:
+        flash('ERROR: Rating must be between 1 and 5.')
+        return redirect('/recipe/' + str(recipe_id))
+    if len(comment) > 1000:
+        flash('ERROR: Comment is too long (maximum 1000 characters).')
+        comment = comment[:1000]
+
+    existing_review = reviews_db.get_user_review_for_recipe(session['user_id'], recipe_id)
+    if existing_review:
+        flash('ERROR: You have already reviewed this recipe.')
+        return redirect('/recipe/' + str(recipe_id))
+
+    reviews_db.add_review(recipe_id, session['user_id'], rating, comment)
+    flash('Your review has been added.')
+    return redirect('/recipe/' + str(recipe_id))
+
+@app.route('/edit_review/<int:recipe_id>', methods=['POST'])
+def edit_review(recipe_id):
+    require_login()
+
+    recipe = recipes_db.get_recipe_by_id(recipe_id)
+    if not recipe:
+        flash('ERROR: Recipe not found.')
+        return redirect('/')
+
+    existing_review = reviews_db.get_user_review_for_recipe(session['user_id'], recipe_id)
+    if not existing_review:
+        flash('ERROR: You have not reviewed this recipe yet.')
+        return redirect('/recipe/' + str(recipe_id))
+
+    rating = int(request.form['rating'])
+    comment = request.form['comment']
+    if rating < 1 or rating > 5:
+        flash('ERROR: Rating must be between 1 and 5.')
+        return redirect('/recipe/' + str(recipe_id))
+    if len(comment) > 1000:
+        flash('ERROR: Comment is too long (maximum 1000 characters).')
+        comment = comment[:1000]
+
+    if rating == existing_review['rating'] and comment == existing_review['comment']:
+        return redirect('/recipe/' + str(recipe_id))
+
+    reviews_db.update_review(existing_review['id'], rating, comment)
+    flash('Your review has been updated.')
+    return redirect('/recipe/' + str(recipe_id))
+
+@app.route('/delete_review/<int:recipe_id>', methods=['POST'])
+def delete_review(recipe_id):
+    require_login()
+
+    recipe = recipes_db.get_recipe_by_id(recipe_id)
+    if not recipe:
+        flash('ERROR: Recipe not found.')
+        return redirect('/')
+
+    existing_review = reviews_db.get_user_review_for_recipe(session['user_id'], recipe_id)
+    if not existing_review:
+        flash('ERROR: You have not reviewed this recipe yet.')
+        return redirect('/recipe/' + str(recipe_id))
+
+    reviews_db.delete_review(existing_review['id'])
+    flash('Your review has been deleted.')
+    return redirect('/recipe/' + str(recipe_id))
+
 @app.route('/image/<int:recipe_id>')
 def serve_image(recipe_id):
     image_data = recipes_db.get_recipe_image(recipe_id)
@@ -273,3 +370,9 @@ def require_login():
 def allowed_image(filename):
     return ('.' in filename and
             filename.rsplit('.', 1)[1].lower() in config.ALLOWED_IMAGE_EXTENSIONS)
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace('\r\n', '<br />').replace('\r', '<br />').replace('\n', '<br />')
+    return markupsafe.Markup(content)

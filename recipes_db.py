@@ -34,7 +34,9 @@ def get_recipes(page, page_size):
                     r.created,
                     r.modified,
                     r.user_id,
-                    u.username
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
              FROM recipes r, users u
              WHERE r.user_id = u.id
              ORDER BY r.name ASC
@@ -49,7 +51,9 @@ def get_recipe_by_id(recipe_id):
                     r.created,
                     r.modified,
                     r.user_id,
-                    u.username
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
                    r.id = ?'''
@@ -84,7 +88,9 @@ def search_recipes(query):
                     r.created,
                     r.modified,
                     r.user_id,
-                    u.username
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
                    (r.name LIKE ? OR r.content LIKE ?)
@@ -99,7 +105,9 @@ def search_recipes_paginated(query, page, page_size):
                     r.created,
                     r.modified,
                     r.user_id,
-                    u.username
+                    u.username,
+                    (SELECT AVG(rv.rating) FROM reviews rv WHERE rv.recipe_id = r.id) AS average_rating,
+                    (SELECT COUNT(rv.id) FROM reviews rv WHERE rv.recipe_id = r.id) AS review_count
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
                    (r.name LIKE ? OR r.content LIKE ?)

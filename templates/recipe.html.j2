@@ -19,19 +19,110 @@
       (Updated at {{ recipe.modified }})
     {% endif %}
   </p>
+
+  {% if recipe.average_rating %}
+    <p>
+      Average rating: {{ '%.2f' | format(recipe.average_rating) }} (based on {{ recipe.review_count }} reviews)
+    </p>
+  {% else %}
+    <p>
+      No reviews yet.
+    </p>
+  {% endif %}
+
   {% if recipe.has_image %}
     <p>
       <img src="/image/{{ recipe.id }}" alt="Image for {{ recipe.name }}" />
     </p>
   {% endif %}
-  <p>
+
+  <h3>
     Instructions:
-  </p>
+  </h3>
   <p>
-    {{ recipe.content }}
+    {{ recipe.content | show_lines }}
   </p>
   <p>
     <a href="/edit/{{ recipe.id }}">Edit</a>
     <a href="/remove/{{ recipe.id }}">Remove</a>
   </p>
+
+  {% if session.user_id %}
+    {% if not user_review %}
+      <h3>
+        Add a review:
+      </h3>
+      <form action="/add_review/{{ recipe.id }}" method="post">
+        <p>
+          <label for="rating">Rating (1-5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required />
+      </p>
+      <p>
+        <label for="comment">Comment:</label> <br />
+        <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000"></textarea>
+      </p>
+      <input type="submit" value="Submit review" />
+    </form>
+    {% else %}
+      <h3>Your review:</h3>
+      <p>
+        <b>Rating:</b> {{ user_review.rating }} <br />
+        <b>Comment:</b> {{ user_review.comment | show_lines }} <br />
+        <b>By:</b> <a href="/user/{{ user_review.username }}">{{ user_review.username }}</a> at {{ user_review.created }}
+        {% if user_review.modified %}
+          (Updated at {{ user_review.modified }})
+        {% endif %}
+      </p>
+      <h3>
+        Edit your review:
+      </h3>
+      <form action="/edit_review/{{ recipe.id }}" method="post">
+        <p>
+          <label for="rating">Rating (1-5):</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" value="{{ user_review.rating }}" required />
+      </p>
+      <p>
+        <label for="comment">Comment:</label> <br />
+        <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000">{{ user_review.comment }}</textarea>
+      </p>
+        <input type="submit" value="Edit your review" />
+      </form>
+      
+      <form action="/delete_review/{{ recipe.id }}" method="post" onsubmit="return confirm('Are you sure you want to delete your review? This action cannot be undone.');">
+        <input type="submit" value="Delete your review" />
+      </form>
+    {% endif %}
+  {% else %}
+    <p>
+      <a href="/login">Sign in</a> to add a review.
+    </p>
+  {% endif %}
+  
+  <h3>
+    Reviews:
+  </h3>
+  {% if reviews | count == 0 %}
+    <p>No reviews yet.</p>
+  {% else %}
+    {% for review in reviews %}
+      <p>
+        <b>Rating:</b> {{ review.rating }} <br />
+        <b>Comment:</b> {{ review.comment | show_lines }} <br />
+        <b>By:</b> <a href="/user/{{ review.username }}">{{ review.username }}</a> at {{ review.created }}
+        {% if review.modified %}
+          (Updated at {{ review.modified }})
+        {% endif %}
+      </p>
+      <hr />
+    {% endfor %}
+    <p>
+      {% if page > 1 %}
+        <a href="/recipe/{{ recipe.id }}/{{ page - 1 }}">&lt; Previous</a>
+      {% endif %}
+      Page {{ page }} of {{ page_count }}
+      {% if page < page_count %}
+        <a href="/recipe/{{ recipe.id }}/{{ page + 1 }}">Next &gt;</a>
+      {% endif %}
+    </p>
+  {% endif %}
 {% endblock %}
