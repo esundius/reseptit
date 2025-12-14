@@ -43,28 +43,35 @@ def index(page=1):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html.j2')
+        return render_template('login.html.j2', next_page=request.referrer)
 
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        next_page = request.form['next_page']
 
         user = users_db.get_user(username)
         if not user or not check_password_hash(user['password_hash'], password):
             flash('ERROR: User not found or wrong password')
-            return render_template('login.html.j2')
+            return render_template('login.html.j2', next_page=next_page)
 
         session['user_id'] = user['id']
         session['username'] = username
         session['csrf_token'] = config.CSRF_TOKEN_KEY
         flash('Hello, ' + username + '! You have successfully logged in.')
-        return redirect('/')
+        return redirect(next_page)
 
 @app.route('/logout')
 def logout():
+    print(f'referrer: {request.referrer}')
     del session['username']
     del session['user_id']
-    return redirect('/')
+    secure_pages = ['add_recipe', 'edit', 'remove', 'add_review', 'edit_review', 'delete_review']
+    
+    if not request.referrer or any(page in request.referrer for page in secure_pages):
+        return redirect('/')
+    else:
+        return redirect(request.referrer)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
