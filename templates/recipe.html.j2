@@ -49,10 +49,12 @@
     </p>
   {% endif %}
 
-  <p>
-    <a href="/edit/{{ recipe.id }}">Edit</a>
-    <a href="/remove/{{ recipe.id }}">Remove</a>
-  </p>
+  {% if session.user_id and recipe.user_id == session.user_id %}
+    <p>
+      <a href="/edit/{{ recipe.id }}">Edit</a>
+      <a href="/remove/{{ recipe.id }}">Remove</a>
+    </p>
+  {% endif %}
 
   {% if session.user_id and recipe.user_id != session.user_id %}
     {% if not user_review %}
