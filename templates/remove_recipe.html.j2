@@ -17,6 +17,7 @@
     <p>
       Are you sure you want to remove the recipe?
     </p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" name="continue" value="Yes, remove it" />
     <input type="submit" name="cancel" value="Cancel" />
   </form>

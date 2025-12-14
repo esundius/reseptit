@@ -33,6 +33,7 @@
       <label for="image">Image:</label> <br />
       <input type="file" id="image" name="image" accept="image/*" />
     </p>
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <input type="submit" name="save" value="Save changes" />
     <input type="submit" name="cancel" value="Cancel" />
   </form>

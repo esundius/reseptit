@@ -1,7 +1,7 @@
 import math
 import time
 import sqlite3
-from flask import Flask
+from flask import Flask, abort
 from flask import redirect, render_template, request, session, flash, make_response, g
 from werkzeug.security import generate_password_hash, check_password_hash
 import markupsafe
@@ -12,7 +12,7 @@ import tags_db
 import config
 
 app = Flask(__name__)
-app.secret_key = config.secret_key
+app.secret_key = config.SECRET_KEY
 
 @app.before_request
 def before_request():
@@ -21,7 +21,6 @@ def before_request():
 @app.after_request
 def after_request(response):
     duration = time.time() - g.start_time
-    #response.headers.set('X-Response-Time', f'{duration:.5f}s')
     print(f'{request.method} {request.path} completed in {duration:.5f}s')
     return response
 
@@ -57,6 +56,7 @@ def login():
 
         session['user_id'] = user['id']
         session['username'] = username
+        session['csrf_token'] = config.CSRF_TOKEN_KEY
         flash('Hello, ' + username + '! You have successfully logged in.')
         return redirect('/')
 
@@ -97,6 +97,7 @@ def register():
 @app.route('/add_recipe', methods=['GET', 'POST'])
 def add_recipe():
     require_login()
+    check_csrf_token()
 
     if request.method == 'GET':
         return render_template('add_recipe.html.j2')
@@ -118,8 +119,8 @@ def add_recipe():
             else:
                 image = file.read()
                 image_type = file.filename.rsplit('.', 1)[1].lower()
-                if len(image) > config.max_image_size:
-                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.max_image_size / (1024 * 1024)} MB.')
+                if len(image) > config.MAX_IMAGE_SIZE:
+                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.MAX_IMAGE_SIZE / (1024 * 1024)} MB.')
                     file, image = None, None
                     error_found = True
         if not name:
@@ -205,6 +206,7 @@ def search(page=1):
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
     require_login()
+    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -234,8 +236,8 @@ def edit_recipe(recipe_id):
             else:
                 image = file.read()
                 image_type = file.filename.rsplit('.', 1)[1].lower()
-                if len(image) > config.max_image_size:
-                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.max_image_size / (1024 * 1024)} MB.')
+                if len(image) > config.MAX_IMAGE_SIZE:
+                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.MAX_IMAGE_SIZE / (1024 * 1024)} MB.')
                     file, image, image_type = None, None, None
                     error_found = True
         if not name:
@@ -269,6 +271,7 @@ def edit_recipe(recipe_id):
 @app.route('/remove/<int:recipe_id>', methods=['GET', 'POST'])
 def remove_recipe(recipe_id):
     require_login()
+    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -307,6 +310,7 @@ def show_user(username, page=1):
 @app.route('/add_review/<int:recipe_id>', methods=['POST'])
 def add_review(recipe_id):
     require_login()
+    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -338,6 +342,7 @@ def add_review(recipe_id):
 @app.route('/edit_review/<int:recipe_id>', methods=['POST'])
 def edit_review(recipe_id):
     require_login()
+    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -368,6 +373,7 @@ def edit_review(recipe_id):
 @app.route('/delete_review/<int:recipe_id>', methods=['POST'])
 def delete_review(recipe_id):
     require_login()
+    check_csrf_token()
 
     recipe = recipes_db.get_recipe_by_id(recipe_id)
     if not recipe:
@@ -409,3 +415,10 @@ def show_lines(content):
     content = str(markupsafe.escape(content))
     content = content.replace('\r\n', '<br />').replace('\r', '<br />').replace('\n', '<br />')
     return markupsafe.Markup(content)
+
+def check_csrf_token():
+    form_token = request.form.get('csrf_token')
+    session_token = session.get('csrf_token')
+    if not form_token or not session_token or form_token != session_token:
+        flash('ERROR: Invalid CSRF token.')
+        abort(403)

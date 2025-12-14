@@ -68,6 +68,7 @@
         <label for="comment">Comment:</label> <br />
         <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000"></textarea>
       </p>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
       <input type="submit" value="Submit review" />
     </form>
     {% else %}
@@ -92,10 +93,12 @@
         <label for="comment">Comment:</label> <br />
         <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000">{{ user_review.comment }}</textarea>
       </p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Edit your review" />
       </form>
       
       <form action="/delete_review/{{ recipe.id }}" method="post" onsubmit="return confirm('Are you sure you want to delete your review? This action cannot be undone.');">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Delete your review" />
       </form>
     {% endif %}
