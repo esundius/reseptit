@@ -113,7 +113,7 @@ def add_recipe():
         name = request.form['name']
         content = request.form['content']
         file = request.files.get('image')
-        tags = request.form['tags'].replace(',', ' ').split()
+        tags = request.form['tags'].casefold().replace(',', ' ').split()
         image = None
         image_type = None
         error_found = False
@@ -230,7 +230,7 @@ def edit_recipe(recipe_id):
         name = request.form['name']
         content = request.form['content']
         file = request.files.get('image')
-        tags = request.form['tags'].replace(',', ' ').split()
+        tags = request.form['tags'].casefold().replace(',', ' ').split()
         image = None
         image_type = None
         error_found = False
