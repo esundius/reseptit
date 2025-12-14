@@ -36,7 +36,7 @@ def index(page=1):
         return redirect('/1')
     if page > page_count:
         return redirect(f'/{page_count}')
-    
+
     recipes = recipes_db.get_recipes(page, page_size)
     return render_template('index.html.j2', page=page, page_count=page_count, recipes=recipes)
 
@@ -70,7 +70,7 @@ def logout():
     del session['username']
     del session['user_id']
     secure_pages = ['add_recipe', 'edit', 'remove', 'add_review', 'edit_review', 'delete_review']
-    
+
     if not request.referrer or any(page in request.referrer for page in secure_pages):
         return redirect('/')
     else:
@@ -129,8 +129,9 @@ def add_recipe():
             else:
                 image = file.read()
                 image_type = file.filename.rsplit('.', 1)[1].lower()
+                max_size = config.MAX_IMAGE_SIZE / (1024 * 1024)
                 if len(image) > config.MAX_IMAGE_SIZE:
-                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.MAX_IMAGE_SIZE / (1024 * 1024)} MB.')
+                    flash(f'ERROR: Image file size exceeds the maximum limit of {max_size:.2f} MB.')
                     file, image = None, None
                     error_found = True
         if not name:
@@ -146,7 +147,7 @@ def add_recipe():
             error_found = True
         if error_found:
             return render_template('add_recipe.html.j2', name=name, content=content, image=image)
-        
+
         recipe_id = recipes_db.add_recipe(session['user_id'], name, content, image, image_type)
 
         existing_tags = tags_db.get_all_tags()
@@ -169,7 +170,7 @@ def show_recipe(recipe_id, page=1):
     if not recipe:
         flash('ERROR: Recipe not found.')
         return redirect('/')
-    
+
     page_size = 10
     if page < 1:
         page = 1
@@ -179,11 +180,11 @@ def show_recipe(recipe_id, page=1):
     if page > page_count:
         page = page_count
     reviews = reviews_db.get_reviews_for_recipe_paginated(recipe_id, page, page_size)
-    
+
     user_review = None
     if 'user_id' in session:
         user_review = reviews_db.get_user_review_for_recipe(session['user_id'], recipe_id)
-    
+
     return render_template('recipe.html.j2', recipe=recipe, reviews=reviews, page=page, page_count=page_count, reviews_count=reviews_count, user_review=user_review)
 
 @app.route('/search')
@@ -247,8 +248,9 @@ def edit_recipe(recipe_id):
             else:
                 image = file.read()
                 image_type = file.filename.rsplit('.', 1)[1].lower()
+                max_size = config.MAX_IMAGE_SIZE / (1024 * 1024)
                 if len(image) > config.MAX_IMAGE_SIZE:
-                    flash(f'ERROR: Image file size exceeds the maximum limit of {config.MAX_IMAGE_SIZE / (1024 * 1024)} MB.')
+                    flash(f'ERROR: Image file size exceeds the maximum limit of {max_size:.2f} MB.')
                     file, image, image_type = None, None, None
                     error_found = True
         if not name:
@@ -263,7 +265,8 @@ def edit_recipe(recipe_id):
             content = content[:5000]
             error_found = True
         if error_found:
-            return render_template('edit_recipe.html.j2', recipe={'id': recipe_id, 'name': name, 'content': content, 'image': image})
+            recipe = {'id': recipe_id, 'name': name, 'content': content, 'image': image}
+            return render_template('edit_recipe.html.j2', recipe=recipe)
 
         if 'save' in request.form:
             recipes_db.update_recipe(recipe_id, name, content, image, image_type)
@@ -419,7 +422,7 @@ def serve_image(recipe_id):
     if not image_data:
         flash('ERROR: Image not found.')
         return redirect('/')
-    
+
     image, image_type = image_data['image'], image_data['image_type']
     response = make_response(bytes(image))
     response.headers.set('Content-Type', f'image/{image_type}')
