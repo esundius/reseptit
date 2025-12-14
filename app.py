@@ -43,7 +43,10 @@ def index(page=1):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html.j2', next_page=request.referrer)
+        next_page = request.referrer
+        if 'register' in next_page:
+            next_page = '/'
+        return render_template('login.html.j2', next_page=next_page)
 
     if request.method == 'POST':
         username = request.form['username']
@@ -265,6 +268,13 @@ def edit_recipe(recipe_id):
             recipes_db.update_recipe(recipe_id, name, content, image, image_type)
             existing_tags = tags_db.get_all_tags()
             tag_name_to_id = {tag['name']: tag['id'] for tag in existing_tags}
+            tags_before = tags_db.get_tags_for_recipe(recipe_id)
+            tag_names_before = [tag['name'] for tag in tags_before]
+            for tag in tag_names_before:
+                if tag not in tags:
+                    tags_db.remove_tag_from_recipe(recipe_id, tag_name_to_id[tag])
+                    if not tags_db.is_tag_used(tag_name_to_id[tag]):
+                        tags_db.delete_tag(tag_name_to_id[tag])
             for tag in tags:
                 if tag not in tag_name_to_id:
                     tag_name_to_id[tag] = tags_db.add_tag(tag)
@@ -293,7 +303,12 @@ def remove_recipe(recipe_id):
     if request.method == 'POST':
         check_csrf_token()
         if 'continue' in request.form:
+            used_tags = tags_db.get_tags_for_recipe(recipe_id)
             recipes_db.delete_recipe(recipe_id)
+            for tag in used_tags:
+                if not tags_db.is_tag_used(tag['id']):
+                    tags_db.delete_tag(tag['id'])
+            flash('Recipe removed successfully.')
         return redirect('/')
 
 @app.route('/user/<username>')

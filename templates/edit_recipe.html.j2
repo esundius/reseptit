@@ -24,7 +24,7 @@
     </p>
     <p>
       <label for="tags">Tags (comma separated):</label> <br />
-      <input type="text" id="tags" name="tags" value="{{ recipe.tags }}" />
+      <input type="text" id="tags" name="tags" value="{{ recipe.tags if recipe.tags else '' }}" />
     </p>
     {% if recipe.image %}
       <p>Current image uploaded.</p>

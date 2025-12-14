@@ -22,12 +22,15 @@
         <input type="text" id="query" name="query" />
       {% endif %}
     </p>
-    <p>
-      <label for="tags">Filter by tags (when selecting multiple tags, any will match):</label>
-      {% for tag in all_tags %}
-        <input type="checkbox" name="tags" value="{{ tag.name }}" {% if tag.name in request.args.getlist('tags') %}checked{% endif %}>{{ tag.name }}
-      {% endfor %}
-    </p>
+    {% if all_tags %}
+      <p>
+        <label for="tags">Filter by tags (when selecting multiple tags, any will match):</label>
+        <br />
+        {% for tag in all_tags %}
+          <input type="checkbox" name="tags" value="{{ tag.name }}" {% if tag.name in request.args.getlist('tags') %}checked{% endif %}>{{ tag.name }}
+        {% endfor %}
+      </p>
+    {% endif %}
     <input type="submit" value="Search" />
   </form>
 

@@ -147,3 +147,10 @@ def get_recipe_count_filtered_by_tags(query, tag_ids):
     params = ['%' + query + '%', '%' + query + '%'] + tag_ids
     result = db.query(sql, params)
     return result[0]['count'] if result else 0
+
+def is_tag_used(tag_id):
+    sql = '''SELECT COUNT(*) AS count
+             FROM recipe_tags rt
+             WHERE rt.tag_id = ?'''
+    result = db.query(sql, (tag_id,))
+    return result[0]['count'] > 0 if result else False
