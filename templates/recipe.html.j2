@@ -64,21 +64,21 @@
       <form action="/add_review/{{ recipe.id }}" method="post">
         <p>
           <label for="rating">Rating (1-5):</label>
-        <input type="number" id="rating" name="rating" min="1" max="5" required />
-      </p>
-      <p>
-        <label for="comment">Comment:</label> <br />
-        <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000"></textarea>
-      </p>
-      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-      <input type="submit" value="Submit review" />
+          <input type="number" id="rating" name="rating" min="1" max="5" required />
+        </p>
+        <p>
+          <label for="comment">Comment:</label> <br />
+          <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000"></textarea>
+        </p>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+        <input type="submit" value="Submit review" />
     </form>
     {% else %}
       <h3>Your review:</h3>
       <p>
         <b>Rating:</b> {{ user_review.rating }} <br />
         <b>Comment:</b> {{ user_review.comment | show_lines }} <br />
-        <b>By:</b> <a href="/user/{{ user_review.username }}">{{ user_review.username }}</a> at {{ user_review.created }}
+        <b>Review made: {{ user_review.created }}
         {% if user_review.modified %}
           (Updated at {{ user_review.modified }})
         {% endif %}
@@ -89,12 +89,12 @@
       <form action="/edit_review/{{ recipe.id }}" method="post">
         <p>
           <label for="rating">Rating (1-5):</label>
-        <input type="number" id="rating" name="rating" min="1" max="5" value="{{ user_review.rating }}" required />
-      </p>
-      <p>
-        <label for="comment">Comment:</label> <br />
-        <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000">{{ user_review.comment }}</textarea>
-      </p>
+          <input type="number" id="rating" name="rating" min="1" max="5" value="{{ user_review.rating }}" required />
+        </p>
+        <p>
+          <label for="comment">Comment:</label> <br />
+          <textarea id="comment" name="comment" rows="5" cols="100" maxlength="2000">{{ user_review.comment }}</textarea>
+        </p>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <input type="submit" value="Edit your review" />
       </form>

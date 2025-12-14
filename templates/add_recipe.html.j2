@@ -16,7 +16,7 @@
   <form action="/add_recipe" method="post" enctype="multipart/form-data">
     <p>
       <label for="name">Name of recipe:</label> <br />
-      <textarea id="name" name="name" rows="1" cols="10" maxlength="100" required>{{ name }}</textarea>
+      <input type="text" id="name" name="name" value="{{ name }}" required />
     </p>
     <p>
       <label for="content">Instructions:</label> <br />

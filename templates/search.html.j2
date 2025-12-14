@@ -31,7 +31,6 @@
     <input type="submit" value="Search" />
   </form>
 
-
   {% if query or request.args.getlist('tags') %}
     <h2>Search results</h2>
     {% if not recipes %}

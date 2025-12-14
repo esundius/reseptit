@@ -15,9 +15,17 @@
   <h1>User {{ username }}</h1>
 
   {% if recipes | count == 0 %}
-    <p>This user has not added any recipes yet.</p>
+    {% if username == session.username %}
+      <p>You have not added any recipes yet.</p>
+    {% else %}
+      <p>This user has not added any recipes yet.</p>
+    {% endif %}
   {% else %}
-    <h2>Recipes added by {{ username }}</h2>
+    {% if username == session.username %}
+      <h2>Recipes added by you</h2>
+    {% else %}
+      <h2>Recipes added by {{ username }}</h2>
+    {% endif %}
     <p>
       A total of {{ recipe_count }} recipes. 
     </p>

@@ -15,12 +15,12 @@
   <h1>Sign in</h1>
   <form action="/login" method="post">
     <p>
-      User name: <br />
-      <input type="text" name="username" />
+      <label for="username">User name:</label> <br />
+      <input type="text" id="username" name="username" />
     </p>
     <p>
-      Password: <br />
-      <input type="password" name="password" />
+      <label for="password">Password:</label> <br />
+      <input type="password" id="password" name="password" />
     </p>
     {% if next_page %}
       <input type="hidden" name="next_page" value="{{ next_page }}" />
