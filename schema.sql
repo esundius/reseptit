@@ -56,3 +56,8 @@ FOR EACH ROW
 BEGIN
     UPDATE reviews SET modified = CURRENT_TIMESTAMP WHERE id = OLD.id;
 END;
+
+CREATE INDEX idx_recipe_name ON recipes(name);
+CREATE INDEX idx_tag_name ON tags(name);
+CREATE INDEX idx_recipe_tags_tag_id ON recipe_tags(tag_id);
+CREATE INDEX idx_recipe_tags_recipe_id ON recipe_tags(recipe_id);

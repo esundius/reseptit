@@ -27,7 +27,10 @@
         <label for="tags">Filter by tags (when selecting multiple tags, any will match):</label>
         <br />
         {% for tag in all_tags %}
-          <input type="checkbox" name="tags" value="{{ tag.name }}" {% if tag.name in request.args.getlist('tags') %}checked{% endif %}>{{ tag.name }}
+          <label>
+            <input type="checkbox" name="tags" value="{{ tag.name }}" {% if tag.name in request.args.getlist('tags') %}checked{% endif %}>
+            {{ tag.name }}
+          </label>
         {% endfor %}
       </p>
     {% endif %}
@@ -39,16 +42,17 @@
     {% if not recipes %}
       <p>No recipes found matching the search query.</p>
     {% else %}
+      <p>Found a total of {{ recipe_count }} matching recipe{{ 's' if recipe_count != 1 else '' }}, showing {{ (page - 1) * 10 + 1 }} to {{ (page - 1) * 10 + recipes|length }}.</p>
       {% block list_recipes scoped %}
         {{ super() }}
       {% endblock %}
       <p>
         {% if page > 1 %}
-          <a href="/search/{{ page - 1 }}?query={{ query }}">&lt; Previous</a>
+          <a href="{{ url_for('search', page=page-1, query=query, tags=request.args.getlist('tags')) }}">&lt; Previous</a>
         {% endif %}
         Page {{ page }} of {{ page_count }}
         {% if page < page_count %}
-          <a href="/search/{{ page + 1 }}?query={{ query }}">Next &gt;</a>
+          <a href="{{ url_for('search', page=page+1, query=query, tags=request.args.getlist('tags')) }}">Next &gt;</a>
         {% endif %}
       </p>
     {% endif %}

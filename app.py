@@ -204,6 +204,7 @@ def search(page=1):
         page = 1
     page_size = 10
     page_count = 1
+    recipe_count = 0
     if query or selected_tags:
         recipe_count = tags_db.get_recipe_count_filtered_by_tags(query, tag_ids)
         page_count = math.ceil(recipe_count / page_size)
@@ -211,7 +212,7 @@ def search(page=1):
         if page > page_count:
             page = page_count
         recipes = tags_db.search_recipes_filtered_by_tags_paginated(query, tag_ids, page, page_size)
-    return render_template('search.html.j2', query=query, recipes=recipes, page=page, page_count=page_count, all_tags=all_tags)
+    return render_template('search.html.j2', query=query, recipes=recipes, page=page, page_count=page_count, all_tags=all_tags, recipe_count=recipe_count)
 
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
