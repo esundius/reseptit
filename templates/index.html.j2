@@ -14,15 +14,18 @@
 {% block body %}
   <h1>Recipes</h1>
   {% if recipes %}
-    {% for recipe in recipes %}
-      <p>
-        {% block list_display_recipe scoped %}
-          {{ super() }}
-        {% endblock %}
-        <br />
-      </p>
-      <hr />
-    {% endfor %}
+    {% block list_recipes scoped %}
+      {{ super() }}
+    {% endblock %}
+    <p>
+      {% if page > 1 %}
+        <a href="/{{ page - 1 }}">&lt; Previous</a>
+      {% endif %}
+      Page {{ page }} of {{ page_count }}
+      {% if page < page_count %}
+        <a href="/{{ page + 1 }}">Next &gt;</a>
+      {% endif %}
+    </p>
   {% else %}
     No recipes found.
   {% endif %}

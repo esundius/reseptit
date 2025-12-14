@@ -18,17 +18,20 @@
     <p>This user has not added any recipes yet.</p>
   {% else %}
     <h2>Recipes added by {{ username }}</h2>
-    <ul>
-      {% for recipe in recipes %}
-        <li>
-          {% block list_display_recipe scoped %}
-            {{ super() }}
-          {% endblock %}
-        </li>
-      {% endfor %}
-    </ul>
     <p>
-      A total of {{ recipes | count }} recipes.
+      A total of {{ recipe_count }} recipes. 
+    </p>
+    {% block list_recipes scoped %}
+      {{ super() }}
+    {% endblock %}
+    <p>
+      {% if page > 1 %}
+        <a href="/user/{{ username }}/{{ page - 1 }}">&lt; Previous</a>
+      {% endif %}
+      Page {{ page }} of {{ page_count }}
+      {% if page < page_count %}
+        <a href="/user/{{ username }}/{{ page + 1 }}">Next &gt;</a>
+      {% endif %}
     </p>
   {% endif %}
 {% endblock %}

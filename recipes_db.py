@@ -9,6 +9,12 @@ def add_recipe(user_id, name, content=None, image=None, image_type=None):
              VALUES (?, ?, ?, ?, ?)'''
     db.execute(sql, (name, content, image, image_type, user_id))
 
+def get_recipe_count():
+    sql = '''SELECT COUNT(*) AS count
+             FROM recipes'''
+    result = db.query(sql)
+    return result[0]['count'] if result else 0
+
 def get_all_recipes():
     sql = '''SELECT r.id,
                     r.name,
@@ -20,6 +26,20 @@ def get_all_recipes():
              WHERE r.user_id = u.id
              ORDER BY r.name ASC'''
     return db.query(sql)
+
+def get_recipes(page, page_size):
+    offset = (page - 1) * page_size
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username
+             FROM recipes r, users u
+             WHERE r.user_id = u.id
+             ORDER BY r.name ASC
+             LIMIT ? OFFSET ?'''
+    return db.query(sql, (page_size, offset))
 
 def get_recipe_by_id(recipe_id):
     sql = '''SELECT r.id,
@@ -67,7 +87,30 @@ def search_recipes(query):
                     u.username
              FROM recipes r, users u
              WHERE r.user_id = u.id AND
-                   r.name LIKE ?
+                   (r.name LIKE ? OR r.content LIKE ?)
              ORDER BY r.name ASC'''
-    results = db.query(sql, ['%' + query + '%'])
+    results = db.query(sql, ['%' + query + '%', '%' + query + '%'])
     return results if results else None
+
+def search_recipes_paginated(query, page, page_size):
+    offset = (page - 1) * page_size
+    sql = '''SELECT r.id,
+                    r.name,
+                    r.created,
+                    r.modified,
+                    r.user_id,
+                    u.username
+             FROM recipes r, users u
+             WHERE r.user_id = u.id AND
+                   (r.name LIKE ? OR r.content LIKE ?)
+             ORDER BY r.name ASC
+             LIMIT ? OFFSET ?'''
+    results = db.query(sql, ['%' + query + '%', '%' + query + '%', page_size, offset])
+    return results if results else None
+
+def get_search_recipe_count(query):
+    sql = '''SELECT COUNT(*) AS count
+             FROM recipes r
+             WHERE (r.name LIKE ? OR r.content LIKE ?)'''
+    result = db.query(sql, ['%' + query + '%', '%' + query + '%'])
+    return result[0]['count'] if result else 0

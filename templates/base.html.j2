@@ -27,13 +27,19 @@
       {% endwith %}
     {% endblock %}
     {% block body %}
-      {% block list_display_recipe %}
-        <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
-        <br />
-        Added by <a href="/user/{{ recipe.username }}">{{ recipe.username }}</a> at {{ recipe.created }}
-        {% if recipe.modified %}
-          (Updated at {{ recipe.modified }})
-        {% endif %}
+      {% block list_recipes %}
+        {% for recipe in recipes %}
+          <p>
+            <a href="/recipe/{{ recipe.id }}">{{ recipe.name }}</a>
+            <br />
+            Added by <a href="/user/{{ recipe.username }}">{{ recipe.username }}</a> at {{ recipe.created }}
+            {% if recipe.modified %}
+              (Updated at {{ recipe.modified }})
+            {% endif %}
+            <br />
+          </p>
+          <hr />
+        {% endfor %}
       {% endblock %}
     {% endblock %}
   </body>

@@ -1,6 +1,8 @@
+import math
+import time
 import sqlite3
 from flask import Flask
-from flask import redirect, render_template, request, session, flash, make_response
+from flask import redirect, render_template, request, session, flash, make_response, g
 from werkzeug.security import generate_password_hash, check_password_hash
 import users_db
 import recipes_db
@@ -9,10 +11,32 @@ import config
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    duration = time.time() - g.start_time
+    #response.headers.set('X-Response-Time', f'{duration:.5f}s')
+    print(f'{request.method} {request.path} completed in {duration:.5f}s')
+    return response
+
 @app.route('/')
-def index():
-    recipes = recipes_db.get_all_recipes()
-    return render_template('index.html.j2', recipes=recipes)
+@app.route('/<int:page>')
+def index(page=1):
+    page_size = 10
+    recipe_count = recipes_db.get_recipe_count()
+    page_count = math.ceil(recipe_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect('/1')
+    if page > page_count:
+        return redirect(f'/{page_count}')
+    
+    recipes = recipes_db.get_recipes(page, page_size)
+    return render_template('index.html.j2', page=page, page_count=page_count, recipes=recipes)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -120,10 +144,23 @@ def show_recipe(recipe_id):
     return render_template('recipe.html.j2', recipe=recipe)
 
 @app.route('/search')
-def search():
+@app.route('/search/<int:page>')
+def search(page=1):
     query = request.args.get('query')
-    recipes = recipes_db.search_recipes(query) if query else []
-    return render_template('search.html.j2', query=query, recipes=recipes)
+    recipes = []
+    if page < 1:
+        page = 1
+    page_size = 10
+    if query:
+        recipe_count = recipes_db.get_search_recipe_count(query)
+        page_count = math.ceil(recipe_count / page_size)
+        page_count = max(page_count, 1)
+        if page > page_count:
+            page = page_count
+        recipes = recipes_db.search_recipes_paginated(query, page, page_size)
+    else:
+        page_count = 1
+    return render_template('search.html.j2', query=query, recipes=recipes, page=page, page_count=page_count)
 
 @app.route('/edit/<int:recipe_id>', methods=['GET', 'POST'])
 def edit_recipe(recipe_id):
@@ -199,14 +236,22 @@ def remove_recipe(recipe_id):
         return redirect('/')
 
 @app.route('/user/<username>')
-def show_user(username):
+@app.route('/user/<username>/<int:page>')
+def show_user(username, page=1):
     user = users_db.get_user(username)
     if not user:
         flash('ERROR: User not found.')
         return redirect('/')
-
-    recipes = users_db.get_user_recipes(user['id'])
-    return render_template('user.html.j2', username=username, recipes=recipes)
+    if page < 1:
+        page = 1
+    page_size = 10
+    recipe_count = users_db.get_user_recipe_count(user['id'])
+    page_count = math.ceil(recipe_count / page_size)
+    page_count = max(page_count, 1)
+    if page > page_count:
+        page = page_count
+    recipes = users_db.get_user_recipes_paginated(user['id'], page, page_size)
+    return render_template('user.html.j2', username=username, recipes=recipes, page=page, page_count=page_count, recipe_count=recipe_count)
 
 @app.route('/image/<int:recipe_id>')
 def serve_image(recipe_id):
